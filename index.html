@@ -198,7 +198,7 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
 </section>
 
 <footer class="foot">
-  המחירים בדולר ארה״ב, אינם כוללים מע״מ ומשלוח, ונכונים למועד העדכון. למוצרים ללא מחיר — השאירו פרטים ונחזור אליכם עם הצעת מחיר. לחיצה על שם מוצר מעתיקה אותו. הכמויות במלאי משתנות ואינן שמורות עד לאישור הזמנה. ט.ל.ח.
+  המחירים בדולר ארה״ב, אינם כוללים מע״מ ומשלוח, ונכונים למועד העדכון. למוצרים ללא מחיר — השאירו פרטים ונחזור אליכם עם הצעת מחיר. לחיצה על שם מוצר מעתיקה את השם, המק״ט והמחיר. הכמויות במלאי משתנות ואינן שמורות עד לאישור הזמנה. ט.ל.ח.
 </footer>
 
 <div class="modal-bg" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
@@ -301,10 +301,10 @@ window.FORM_ENDPOINT = 'https://formsubmit.co/ajax/yakov8868@gmail.com';
       '<td class="c-cat">'+esc(r.category)+'</td>'+
       '<td class="c-brand">'+hl(r.brand,terms)+'</td>'+
       '<td class="c-sku">'+hl(r.sku,terms)+'</td>'+
-      '<td class="c-desc copyable" data-copy="'+r._i+'" title="לחצו להעתקת שם המוצר">'+hl(r.description,terms)+'</td>'+
+      '<td class="c-desc copyable" data-copy="'+r._i+'" title="לחצו להעתקת שם המוצר, המק״ט והמחיר">'+hl(r.description,terms)+'</td>'+
       '<td class="c-price">'+(r.price==null?'<button type="button" class="ask" data-i="'+r._i+'">צור קשר לקבלת מחיר</button>':money.format(r.price))+'</td></tr>').join('');
     $('cards').innerHTML = slice.map(r=>'<div class="pcard">'+
-      '<div class="t copyable" data-copy="'+r._i+'" title="לחצו להעתקת שם המוצר">'+hl(r.description,terms)+'</div>'+
+      '<div class="t copyable" data-copy="'+r._i+'" title="לחצו להעתקת שם המוצר, המק״ט והמחיר">'+hl(r.description,terms)+'</div>'+
       '<div class="meta"><span class="cond '+condCls(r.condition)+'">'+esc(COND[r.condition]||r.condition||'')+'</span><b>'+esc(r.brand)+'</b><span>'+esc(r.category)+'</span><span dir="ltr">'+hl(r.sku,terms)+'</span></div>'+
       '<div class="bottom"><span class="meta">כמות: <b>'+(r.qty==null?'—':nf.format(r.qty))+'</b></span>'+(r.price==null?'<button type="button" class="ask" data-i="'+r._i+'">צור קשר לקבלת מחיר</button>':'<span class="p">'+money.format(r.price)+'</span>')+'</div></div>').join('');
     renderPager(pages);
@@ -342,10 +342,12 @@ window.FORM_ENDPOINT = 'https://formsubmit.co/ajax/yakov8868@gmail.com';
     const el=e.target.closest('.copyable'); if(!el) return;
     if(window.getSelection && String(window.getSelection()).length>0) return; // user is selecting text manually
     const r=DATA[+el.dataset.copy]; if(!r) return;
-    const text=r.description;
+    const text = r.description
+      + (r.sku ? '\nמק״ט: ' + r.sku : '')
+      + '\nמחיר: ' + (r.price==null ? 'לפי הצעת מחיר' : money.format(r.price));
     let ok=false;
     try{ await navigator.clipboard.writeText(text); ok=true; }catch(err){ ok=fallbackCopy(text); }
-    if(ok){ el.classList.add('copied'); setTimeout(()=>el.classList.remove('copied'),900); showToast('שם המוצר הועתק ✓'); }
+    if(ok){ el.classList.add('copied'); setTimeout(()=>el.classList.remove('copied'),900); showToast('המוצר הועתק (שם, מק״ט ומחיר) ✓'); }
     else showToast('לא הצלחנו להעתיק — סמנו את הטקסט והעתיקו ידנית');
   });
 
