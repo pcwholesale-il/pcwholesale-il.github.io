@@ -75,6 +75,30 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
 .loading{padding:70px 20px;text-align:center;color:var(--muted)}
 .spin{width:34px;height:34px;border:3px solid #e2e8f0;border-top-color:var(--brand2);border-radius:50%;margin:0 auto 12px;animation:sp 0.9s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
+.ask{font:inherit;font-size:13px;font-weight:600;border:1.5px solid var(--brand2);color:var(--brand2);background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+.ask:hover{background:var(--brand2);color:#fff}
+.badge-btn{font:inherit;font-size:13px;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap}
+.badge-btn:hover{background:#e0e7ff}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:18px;max-width:480px;width:100%;max-height:92vh;overflow:auto;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(15,23,42,.3)}
+.modal h2{margin:0 0 4px;font-size:21px}
+.modal .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+.modal .prod{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;direction:ltr;text-align:left;margin-bottom:12px;line-height:1.45}
+.modal form{display:grid;gap:10px}
+.modal label{font-size:13px;font-weight:500;color:var(--ink2);display:grid;gap:4px}
+.modal input,.modal textarea{font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;outline:none;width:100%}
+.modal input:focus,.modal textarea:focus{border-color:var(--brand2)}
+.modal textarea{min-height:80px;resize:vertical}
+.modal .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal .actions{display:flex;gap:8px;justify-content:flex-start;margin-top:4px}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand2)}
+.btn-primary:disabled{opacity:.6;cursor:default}
+.msg{font-size:14px;border-radius:10px;padding:10px 12px;display:none}
+.msg.ok{display:block;background:var(--newbg);color:var(--new)}
+.msg.err{display:block;background:#fee2e2;color:#b91c1c}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
 /* mobile cards */
 .cards{display:none}
 @media (max-width:860px){
@@ -108,6 +132,7 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
       <span class="badge">עודכן: <b id="upd">—</b></span>
       <span class="badge"><b id="total">—</b> מוצרים במחירון</span>
       <span class="badge">המחירים בדולר ארה״ב ($)</span>
+      <button type="button" class="badge-btn" id="contact-top">צור קשר</button>
     </div>
   </div>
 </header>
@@ -168,9 +193,38 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
 </section>
 
 <footer class="foot">
-  המחירים בדולר ארה״ב, אינם כוללים מע״מ ומשלוח, ונכונים למועד העדכון. הכמויות במלאי משתנות ואינן שמורות עד לאישור הזמנה. ט.ל.ח.
+  המחירים בדולר ארה״ב, אינם כוללים מע״מ ומשלוח, ונכונים למועד העדכון. למוצרים ללא מחיר — השאירו פרטים ונחזור אליכם עם הצעת מחיר. הכמויות במלאי משתנות ואינן שמורות עד לאישור הזמנה. ט.ל.ח.
 </footer>
 
+<div class="modal-bg" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="modal">
+    <h2 id="m-title">צור קשר</h2>
+    <p class="sub" id="m-sub">השאירו פרטים ונחזור אליכם בהקדם.</p>
+    <div class="prod" id="m-prod" hidden></div>
+    <form id="lead" novalidate>
+      <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="two">
+        <label>שם מלא *<input name="name" required autocomplete="name"></label>
+        <label>טלפון *<input name="phone" type="tel" required autocomplete="tel" dir="ltr"></label>
+      </div>
+      <div class="two">
+        <label>אימייל<input name="email" type="email" autocomplete="email" dir="ltr"></label>
+        <label>חברה / עסק<input name="company" autocomplete="organization"></label>
+      </div>
+      <label>כמות מבוקשת / הערות<textarea name="message"></textarea></label>
+      <div class="msg" id="m-msg"></div>
+      <div class="actions">
+        <button class="btn btn-primary" type="submit" id="m-send">שליחה</button>
+        <button class="btn btn-ghost" type="button" id="m-close">סגירה</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* Lead form: sent by email through FormSubmit. Replace the address with the FormSubmit alias after activation. */
+window.FORM_ENDPOINT = 'https://formsubmit.co/ajax/yakov8868@gmail.com';
+</script>
 <script>
 (function(){
   const COND = {"New":"חדש","Refurbished":"מחודש","Open Box":"Open Box","Used":"משומש"};
@@ -215,6 +269,7 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
       if(st.cat && r.category!==st.cat) return false;
       if(st.brand && r.brand!==st.brand) return false;
       if(st.cond && r.condition!==st.cond) return false;
+      if((st.pmin!=null || st.pmax!=null) && r.price==null) return false;
       if(st.pmin!=null && r.price<st.pmin) return false;
       if(st.pmax!=null && r.price>st.pmax) return false;
       if(terms.length){const h=r._h; for(const t of terms) if(!h.includes(t)) return false;}
@@ -222,7 +277,9 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
     });
     if(st.sort){
       const [k,d]=st.sort.split(':'); const dir=+d;
-      view.sort((a,b)=>{const x=a[k],y=b[k]; if(typeof x==='number'||typeof y==='number') return ((x??-1)-(y??-1))*dir; return String(x||'').localeCompare(String(y||''),'en')*dir;});
+      view.sort((a,b)=>{const x=a[k],y=b[k];
+        if(k==='price'||k==='qty'){ if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1; return (x-y)*dir; }
+        return String(x||'').localeCompare(String(y||''),'en')*dir;});
     }
     for(const th of document.querySelectorAll('thead th')){const k=th.dataset.k;const [sk,sd]=st.sort.split(':');th.querySelector('.arr').textContent = sk===k ? (sd==='1'?'▲':'▼') : '';}
     render(terms);
@@ -240,11 +297,11 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
       '<td class="c-brand">'+hl(r.brand,terms)+'</td>'+
       '<td class="c-sku">'+hl(r.sku,terms)+'</td>'+
       '<td class="c-desc">'+hl(r.description,terms)+'</td>'+
-      '<td class="c-price">'+money.format(r.price)+'</td></tr>').join('');
+      '<td class="c-price">'+(r.price==null?'<button type="button" class="ask" data-i="'+r._i+'">צור קשר לקבלת מחיר</button>':money.format(r.price))+'</td></tr>').join('');
     $('cards').innerHTML = slice.map(r=>'<div class="pcard">'+
       '<div class="t">'+hl(r.description,terms)+'</div>'+
       '<div class="meta"><span class="cond '+condCls(r.condition)+'">'+esc(COND[r.condition]||r.condition||'')+'</span><b>'+esc(r.brand)+'</b><span>'+esc(r.category)+'</span><span dir="ltr">'+hl(r.sku,terms)+'</span></div>'+
-      '<div class="bottom"><span class="meta">כמות: <b>'+(r.qty==null?'—':nf.format(r.qty))+'</b></span><span class="p">'+money.format(r.price)+'</span></div></div>').join('');
+      '<div class="bottom"><span class="meta">כמות: <b>'+(r.qty==null?'—':nf.format(r.qty))+'</b></span>'+(r.price==null?'<button type="button" class="ask" data-i="'+r._i+'">צור קשר לקבלת מחיר</button>':'<span class="p">'+money.format(r.price)+'</span>')+'</div></div>').join('');
     renderPager(pages);
   }
   function renderPager(pages){
@@ -268,9 +325,55 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
   for(const th of document.querySelectorAll('thead th')) th.addEventListener('click',()=>{const k=th.dataset.k;const [sk,sd]=st.sort.split(':');st.sort = k+':'+(sk===k&&sd==='1'?'-1':'1');$('sort').value=[...$('sort').options].some(o=>o.value===st.sort)?st.sort:'';apply();});
   $('reset').addEventListener('click',()=>{Object.assign(st,{q:'',cat:'',brand:'',cond:'',pmin:null,pmax:null,sort:''});$('q').value='';$('pmin').value='';$('pmax').value='';$('sort').value='';page=1;buildFilters();apply();});
 
+  // ----- contact form -----
+  const modal=$('modal'), form=$('lead'), msg=$('m-msg'), send=$('m-send');
+  let curProd=null;
+  function openForm(r){
+    curProd=r||null; form.reset(); msg.className='msg'; msg.textContent=''; send.disabled=false; form.hidden=false;
+    $('m-title').textContent = r ? 'בקשת הצעת מחיר' : 'צור קשר';
+    $('m-sub').textContent = r ? 'השאירו פרטים ונחזור אליכם עם מחיר למוצר הזה.' : 'השאירו פרטים ונחזור אליכם בהקדם.';
+    const p=$('m-prod'); if(r){p.hidden=false;p.textContent=(r.brand?r.brand+' · ':'')+(r.sku?r.sku+' · ':'')+r.description;} else {p.hidden=true;}
+    modal.classList.add('open'); setTimeout(()=>form.elements.name.focus(),50);
+  }
+  function closeForm(){ modal.classList.remove('open'); }
+  $('contact-top').addEventListener('click',()=>openForm(null));
+  $('m-close').addEventListener('click',closeForm);
+  modal.addEventListener('click',e=>{ if(e.target===modal) closeForm(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeForm(); });
+  document.addEventListener('click',e=>{ const b=e.target.closest('.ask'); if(b){ openForm(DATA[+b.dataset.i]); } });
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const f=form.elements;
+    if(f._honey.value) return;
+    const name=f.name.value.trim(), phone=f.phone.value.trim(), email=f.email.value.trim();
+    if(!name||phone.replace(/\D/g,'').length<9){ msg.className='msg err'; msg.textContent='נא למלא שם ומספר טלפון תקין.'; return; }
+    if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.className='msg err'; msg.textContent='כתובת האימייל לא תקינה.'; return; }
+    send.disabled=true; msg.className='msg'; msg.textContent='';
+    const body={
+      _subject: curProd ? 'בקשת הצעת מחיר: '+(curProd.sku||curProd.description.slice(0,40)) : 'פנייה חדשה מהמחירון',
+      _template:'table', _captcha:'false',
+      'שם':name, 'טלפון':phone, 'אימייל':email||'-', 'חברה':f.company.value.trim()||'-', 'הערות':f.message.value.trim()||'-',
+      'מוצר': curProd ? curProd.description : 'פנייה כללית',
+      'מק״ט': curProd ? (curProd.sku||'-') : '-', 'מותג': curProd ? (curProd.brand||'-') : '-', 'קטגוריה': curProd ? (curProd.category||'-') : '-',
+      'כמות במלאי': curProd && curProd.qty!=null ? String(curProd.qty) : '-'
+    };
+    if(email) body._replyto=email;
+    try{
+      const res=await fetch(window.FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)});
+      const j=await res.json().catch(()=>({}));
+      if(!res.ok || j.success===false || j.success==='false') throw new Error(j.message||'send failed');
+      msg.className='msg ok'; msg.textContent='תודה! הפרטים התקבלו ונחזור אליכם בהקדם.';
+      form.querySelectorAll('input,textarea').forEach(x=>x.value='');
+      setTimeout(closeForm,2500);
+    }catch(err){
+      send.disabled=false; msg.className='msg err'; msg.textContent='השליחה לא הצליחה. נסו שוב בעוד רגע.';
+    }
+  });
+
   Promise.all([fetch('data.json',{cache:'no-store'}).then(r=>r.json()), fetch('meta.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>({}))])
     .then(([rows,meta])=>{
-      DATA = rows.filter(r=>typeof r.price==='number');
+      DATA = rows;
+      DATA.forEach((r,i)=>{ r._i=i; });
       for(const r of DATA) r._h = (r.sku+' '+r.description+' '+r.brand+' '+r.category).toLowerCase();
       if(meta.updated){const d=new Date(meta.updated.replace(' ','T'));$('upd').textContent=isNaN(d)?meta.updated:d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'numeric'});}
       $('total').textContent = nf.format(DATA.length);
