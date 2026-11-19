@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מחירון מוצרים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#e2e8f0; --bg:#f4f6fa; --card:#fff;
+  --brand:#1d3a8a; --brand2:#2f5bd3; --accent:#0ea5a4; --chip:#eef2ff; --new:#15803d; --newbg:#dcfce7; --ref:#b45309; --refbg:#fef3c7;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Heebo,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:15px}
+a{color:inherit}
+.top{background:linear-gradient(120deg,#0b1f55 0%,#1d3a8a 55%,#2f5bd3 100%);color:#fff;padding:28px 20px 76px}
+.wrap{max-width:1320px;margin:0 auto}
+.brandrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-weight:800;font-size:20px;letter-spacing:.5px}
+.logo h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.2px}
+.logo p{margin:2px 0 0;opacity:.8;font-size:14px}
+.badges{display:flex;gap:10px;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 14px;font-size:13px;white-space:nowrap}
+.badge b{font-weight:700}
+.panel{max-width:1320px;margin:-52px auto 0;padding:0 20px}
+.filters{background:var(--card);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.08);padding:18px;display:grid;gap:14px}
+.row1{display:grid;grid-template-columns:1fr auto;gap:12px}
+.search{position:relative}
+.search input{width:100%;font:inherit;font-size:16px;padding:13px 44px 13px 14px;border:1.5px solid var(--line);border-radius:12px;background:#f8fafc;outline:none;transition:border-color .15s,background .15s}
+.search input:focus{border-color:var(--brand2);background:#fff}
+.search svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted)}
+.selects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.field label{display:block;font-size:12px;color:var(--muted);margin:0 2px 4px;font-weight:500}
+.field select,.field input{width:100%;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+.field select:focus,.field input:focus{border-color:var(--brand2)}
+.price2{display:flex;gap:6px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 16px;cursor:pointer}
+.btn-ghost{background:#f1f5f9;color:var(--ink2)}
+.btn-ghost:hover{background:#e2e8f0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:inherit;font-size:13px;font-weight:500;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;cursor:pointer;color:var(--ink2);white-space:nowrap}
+.chip:hover{border-color:#c7d2fe}
+.chip[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip .n{opacity:.65;font-weight:400;margin-inline-start:4px}
+.resultbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 2px 10px;color:var(--muted);font-size:14px}
+.resultbar b{color:var(--ink)}
+.tablecard{background:var(--card);border-radius:16px;box-shadow:0 4px 18px rgba(15,23,42,.05);overflow:hidden}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{background:#f8fafc;color:var(--ink2);font-size:13px;font-weight:600;text-align:right;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;cursor:pointer;user-select:none}
+thead th:hover{color:var(--brand2)}
+thead th .arr{display:inline-block;width:12px;color:var(--brand2)}
+tbody td{padding:12px 14px;border-bottom:1px solid #eef2f7;vertical-align:middle;font-size:14px}
+tbody tr:hover td{background:#fafcff}
+.c-qty{font-variant-numeric:tabular-nums;font-weight:600;text-align:center}
+.c-sku{direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.c-desc{direction:ltr;text-align:left;min-width:320px;color:var(--ink);line-height:1.45}
+.c-price{direction:ltr;text-align:left;white-space:nowrap;font-weight:700;font-size:15.5px;color:var(--brand);font-variant-numeric:tabular-nums}
+.c-brand{font-weight:600;white-space:nowrap}
+.c-cat{color:var(--ink2);white-space:nowrap;font-size:13px}
+.cond{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.cond.new{background:var(--newbg);color:var(--new)}
+.cond.ref{background:var(--refbg);color:var(--ref)}
+.cond.oth{background:#f1f5f9;color:var(--ink2)}
+mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.pager{display:flex;justify-content:center;align-items:center;gap:6px;padding:16px;flex-wrap:wrap}
+.pager button{font:inherit;min-width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;color:var(--ink2);font-weight:500}
+.pager button[aria-current=true]{background:var(--brand);color:#fff;border-color:var(--brand)}
+.pager button:disabled{opacity:.4;cursor:default}
+.pager .dots{color:var(--muted);padding:0 4px}
+.foot{max-width:1320px;margin:22px auto 40px;padding:0 22px;color:var(--muted);font-size:13px;line-height:1.6}
+.loading{padding:70px 20px;text-align:center;color:var(--muted)}
+.spin{width:34px;height:34px;border:3px solid #e2e8f0;border-top-color:var(--brand2);border-radius:50%;margin:0 auto 12px;animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* mobile cards */
+.cards{display:none}
+@media (max-width:860px){
+  .selects{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row1{grid-template-columns:1fr}
+  .tscroll{display:none}
+  .cards{display:grid;gap:10px;padding:12px}
+  .pcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px}
+  .pcard .t{direction:ltr;text-align:left;font-weight:500;line-height:1.4}
+  .pcard .meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--muted);align-items:center}
+  .pcard .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+  .pcard .p{font-weight:800;color:var(--brand);font-size:18px;direction:ltr}
+  .logo h1{font-size:22px}
+}
+@media print{
+  .top{background:#fff;color:#000;padding:10px 0}.filters,.pager,.resultbar{display:none}.panel{margin:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap brandrow">
+    <div class="logo">
+      <div class="logo-mark">₪$</div>
+      <div>
+        <h1>מחירון מוצרים</h1>
+        <p>מחשבים ניידים, מחשבים, טאבלטים, סלולר ואלקטרוניקה</p>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge">עודכן: <b id="upd">—</b></span>
+      <span class="badge"><b id="total">—</b> מוצרים במחירון</span>
+      <span class="badge">המחירים בדולר ארה״ב ($)</span>
+    </div>
+  </div>
+</header>
+
+<section class="panel" aria-label="סינון וחיפוש">
+  <div class="filters">
+    <div class="row1">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="חיפוש לפי דגם, מק״ט, מעבד, נפח… (למשל: MacBook Air M4, i7 16GB)" aria-label="חיפוש" autocomplete="off">
+      </div>
+      <button class="btn btn-ghost" id="reset" type="button">ניקוי סינון</button>
+    </div>
+    <div class="selects">
+      <div class="field"><label for="f-cat">קטגוריה</label><select id="f-cat"></select></div>
+      <div class="field"><label for="f-brand">מותג</label><select id="f-brand"></select></div>
+      <div class="field"><label for="f-cond">מצב</label><select id="f-cond"></select></div>
+      <div class="field"><label>טווח מחיר ($)</label><div class="price2"><input id="pmin" type="number" inputmode="decimal" placeholder="מ־" min="0"><input id="pmax" type="number" inputmode="decimal" placeholder="עד" min="0"></div></div>
+      <div class="field"><label for="sort">מיון</label>
+        <select id="sort">
+          <option value="">ברירת מחדל</option>
+          <option value="price:1">מחיר: מהנמוך לגבוה</option>
+          <option value="price:-1">מחיר: מהגבוה לנמוך</option>
+          <option value="qty:-1">כמות: מהגדולה לקטנה</option>
+          <option value="brand:1">מותג: א–ת</option>
+        </select>
+      </div>
+    </div>
+    <div class="chips" id="chips" aria-label="קטגוריות"></div>
+  </div>
+
+  <div class="resultbar">
+    <div id="count">טוען מחירון…</div>
+    <div class="field" style="display:flex;align-items:center;gap:8px"><label for="per" style="margin:0">שורות בעמוד</label>
+      <select id="per" style="width:auto"><option>25</option><option selected>50</option><option>100</option><option>200</option></select></div>
+  </div>
+
+  <div class="tablecard">
+    <div id="loading" class="loading"><div class="spin"></div>טוען את המחירון…</div>
+    <div class="tscroll" id="tscroll" hidden>
+      <table>
+        <thead><tr>
+          <th data-k="qty" style="text-align:center">כמות <span class="arr"></span></th>
+          <th data-k="condition">מצב <span class="arr"></span></th>
+          <th data-k="category">קטגוריה <span class="arr"></span></th>
+          <th data-k="brand">מותג <span class="arr"></span></th>
+          <th data-k="sku">מק״ט <span class="arr"></span></th>
+          <th data-k="description">תיאור <span class="arr"></span></th>
+          <th data-k="price">מחיר ($) <span class="arr"></span></th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="empty" id="empty" hidden>לא נמצאו מוצרים שמתאימים לחיפוש. נסו מילה אחרת או נקו את הסינון.</div>
+    <nav class="pager" id="pager" aria-label="עמודים"></nav>
+  </div>
+</section>
+
+<footer class="foot">
+  המחירים בדולר ארה״ב, אינם כוללים מע״מ ומשלוח, ונכונים למועד העדכון. הכמויות במלאי משתנות ואינן שמורות עד לאישור הזמנה. ט.ל.ח.
+</footer>
+
+<script>
+(function(){
+  const COND = {"New":"חדש","Refurbished":"מחודש","Open Box":"Open Box","Used":"משומש"};
+  const $ = (id) => document.getElementById(id);
+  const nf = new Intl.NumberFormat('en-US');
+  const money = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2});
+  let DATA = [], view = [], page = 1;
+  const st = {q:'',cat:'',brand:'',cond:'',pmin:null,pmax:null,sort:'',per:50};
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function hl(text, terms){
+    let s = esc(text);
+    if(!terms.length) return s;
+    for(const t of terms){ if(t.length<2) continue;
+      const re = new RegExp('('+esc(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+      s = s.replace(/(<[^>]*>)|([^<]+)/g,(m,tag,txt)=> tag ? tag : txt.replace(re,'<mark>$1</mark>'));
+    }
+    return s;
+  }
+  function counts(rows,k){const m=new Map();for(const r of rows){const v=r[k];if(v)m.set(v,(m.get(v)||0)+1);}return [...m.entries()].sort((a,b)=>b[1]-a[1]);}
+  function fillSel(sel, all, entries, cur, label){
+    sel.innerHTML='';
+    sel.append(new Option(all,''));
+    for(const [v,n] of entries) sel.append(new Option((label?label(v):v)+' ('+nf.format(n)+')',v));
+    sel.value = entries.some(e=>e[0]===cur)?cur:'';
+    return sel.value;
+  }
+  function buildFilters(){
+    const cats = counts(DATA,'category');
+    st.cat = fillSel($('f-cat'),'כל הקטגוריות',cats,st.cat);
+    const inCat = st.cat?DATA.filter(r=>r.category===st.cat):DATA;
+    st.brand = fillSel($('f-brand'),'כל המותגים',counts(inCat,'brand'),st.brand);
+    st.cond = fillSel($('f-cond'),'כל המצבים',counts(DATA,'condition'),st.cond,v=>COND[v]||v);
+    const ch=$('chips'); ch.innerHTML='';
+    const mk=(v,label,n)=>{const b=document.createElement('button');b.type='button';b.className='chip';b.setAttribute('aria-pressed',String(st.cat===v));b.innerHTML=esc(label)+(n!=null?'<span class="n">'+nf.format(n)+'</span>':'');b.onclick=()=>{st.cat=v;st.brand='';page=1;buildFilters();apply();};ch.append(b);};
+    mk('','הכל',DATA.length);
+    for(const [v,n] of cats) mk(v,v,n);
+  }
+  function apply(){
+    const terms = st.q.toLowerCase().split(/\s+/).filter(Boolean);
+    view = DATA.filter(r=>{
+      if(st.cat && r.category!==st.cat) return false;
+      if(st.brand && r.brand!==st.brand) return false;
+      if(st.cond && r.condition!==st.cond) return false;
+      if(st.pmin!=null && r.price<st.pmin) return false;
+      if(st.pmax!=null && r.price>st.pmax) return false;
+      if(terms.length){const h=r._h; for(const t of terms) if(!h.includes(t)) return false;}
+      return true;
+    });
+    if(st.sort){
+      const [k,d]=st.sort.split(':'); const dir=+d;
+      view.sort((a,b)=>{const x=a[k],y=b[k]; if(typeof x==='number'||typeof y==='number') return ((x??-1)-(y??-1))*dir; return String(x||'').localeCompare(String(y||''),'en')*dir;});
+    }
+    for(const th of document.querySelectorAll('thead th')){const k=th.dataset.k;const [sk,sd]=st.sort.split(':');th.querySelector('.arr').textContent = sk===k ? (sd==='1'?'▲':'▼') : '';}
+    render(terms);
+  }
+  function render(terms){
+    const pages = Math.max(1,Math.ceil(view.length/st.per)); if(page>pages) page=pages;
+    const slice = view.slice((page-1)*st.per, page*st.per);
+    $('count').innerHTML = view.length ? 'נמצאו <b>'+nf.format(view.length)+'</b> מוצרים' + (view.length>st.per?' · מוצגים '+nf.format((page-1)*st.per+1)+'–'+nf.format(Math.min(page*st.per,view.length)):'') : 'לא נמצאו מוצרים';
+    $('empty').hidden = view.length>0;
+    const condCls = c => c==='New'?'new':(c==='Refurbished'?'ref':'oth');
+    $('tb').innerHTML = slice.map(r=>'<tr>'+
+      '<td class="c-qty">'+(r.qty==null?'':nf.format(r.qty))+'</td>'+
+      '<td><span class="cond '+condCls(r.condition)+'">'+esc(COND[r.condition]||r.condition||'')+'</span></td>'+
+      '<td class="c-cat">'+esc(r.category)+'</td>'+
+      '<td class="c-brand">'+hl(r.brand,terms)+'</td>'+
+      '<td class="c-sku">'+hl(r.sku,terms)+'</td>'+
+      '<td class="c-desc">'+hl(r.description,terms)+'</td>'+
+      '<td class="c-price">'+money.format(r.price)+'</td></tr>').join('');
+    $('cards').innerHTML = slice.map(r=>'<div class="pcard">'+
+      '<div class="t">'+hl(r.description,terms)+'</div>'+
+      '<div class="meta"><span class="cond '+condCls(r.condition)+'">'+esc(COND[r.condition]||r.condition||'')+'</span><b>'+esc(r.brand)+'</b><span>'+esc(r.category)+'</span><span dir="ltr">'+hl(r.sku,terms)+'</span></div>'+
+      '<div class="bottom"><span class="meta">כמות: <b>'+(r.qty==null?'—':nf.format(r.qty))+'</b></span><span class="p">'+money.format(r.price)+'</span></div></div>').join('');
+    renderPager(pages);
+  }
+  function renderPager(pages){
+    const p=$('pager'); p.innerHTML=''; if(pages<=1) return;
+    const btn=(label,to,cur,dis)=>{const b=document.createElement('button');b.type='button';b.textContent=label;if(cur)b.setAttribute('aria-current','true');b.disabled=!!dis;b.onclick=()=>{page=to;render(st.q.toLowerCase().split(/\s+/).filter(Boolean));document.querySelector('.resultbar').scrollIntoView({behavior:'smooth',block:'start'});};p.append(b);};
+    btn('‹',page-1,false,page===1);
+    const set=new Set([1,pages,page-1,page,page+1,page-2,page+2].filter(x=>x>=1&&x<=pages));
+    let last=0; for(const x of [...set].sort((a,b)=>a-b)){ if(x-last>1){const s=document.createElement('span');s.className='dots';s.textContent='…';p.append(s);} btn(String(x),x,x===page); last=x; }
+    btn('›',page+1,false,page===pages);
+  }
+  let t=null;
+  $('q').addEventListener('input',e=>{clearTimeout(t);t=setTimeout(()=>{st.q=e.target.value.trim();page=1;apply();},180);});
+  $('f-cat').addEventListener('change',e=>{st.cat=e.target.value;st.brand='';page=1;buildFilters();apply();});
+  $('f-brand').addEventListener('change',e=>{st.brand=e.target.value;page=1;apply();});
+  $('f-cond').addEventListener('change',e=>{st.cond=e.target.value;page=1;apply();});
+  const num=v=>v===''?null:Math.max(0,+v);
+  $('pmin').addEventListener('input',e=>{st.pmin=num(e.target.value);page=1;apply();});
+  $('pmax').addEventListener('input',e=>{st.pmax=num(e.target.value);page=1;apply();});
+  $('sort').addEventListener('change',e=>{st.sort=e.target.value;apply();});
+  $('per').addEventListener('change',e=>{st.per=+e.target.value;page=1;apply();});
+  for(const th of document.querySelectorAll('thead th')) th.addEventListener('click',()=>{const k=th.dataset.k;const [sk,sd]=st.sort.split(':');st.sort = k+':'+(sk===k&&sd==='1'?'-1':'1');$('sort').value=[...$('sort').options].some(o=>o.value===st.sort)?st.sort:'';apply();});
+  $('reset').addEventListener('click',()=>{Object.assign(st,{q:'',cat:'',brand:'',cond:'',pmin:null,pmax:null,sort:''});$('q').value='';$('pmin').value='';$('pmax').value='';$('sort').value='';page=1;buildFilters();apply();});
+
+  Promise.all([fetch('data.json',{cache:'no-store'}).then(r=>r.json()), fetch('meta.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>({}))])
+    .then(([rows,meta])=>{
+      DATA = rows.filter(r=>typeof r.price==='number');
+      for(const r of DATA) r._h = (r.sku+' '+r.description+' '+r.brand+' '+r.category).toLowerCase();
+      if(meta.updated){const d=new Date(meta.updated.replace(' ','T'));$('upd').textContent=isNaN(d)?meta.updated:d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'numeric'});}
+      $('total').textContent = nf.format(DATA.length);
+      $('loading').hidden=true; $('tscroll').hidden=false;
+      buildFilters(); apply();
+    })
+    .catch(()=>{ $('loading').innerHTML='לא ניתן לטעון את המחירון כרגע. נסו לרענן את העמוד.'; $('count').textContent=''; });
+})();
+</script>
+</body>
+</html>
