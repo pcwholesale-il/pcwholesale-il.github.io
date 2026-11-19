@@ -328,7 +328,7 @@ window.FORM_ENDPOINT = 'https://formsubmit.co/ajax/yakov8868@gmail.com';
         if(k==='price'||k==='qty'){ if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1; return (x-y)*dir; }
         return String(x||'').localeCompare(String(y||''),'en')*dir;});
     }
-    for(const th of document.querySelectorAll('thead th')){const k=th.dataset.k;const [sk,sd]=st.sort.split(':');th.querySelector('.arr').textContent = sk===k ? (sd==='1'?'▲':'▼') : '';}
+    for(const th of document.querySelectorAll('thead th[data-k]')){const k=th.dataset.k;const [sk,sd]=st.sort.split(':');th.querySelector('.arr').textContent = sk===k ? (sd==='1'?'▲':'▼') : '';}
     render(terms);
   }
   function render(terms){
@@ -370,7 +370,7 @@ window.FORM_ENDPOINT = 'https://formsubmit.co/ajax/yakov8868@gmail.com';
   $('pmax').addEventListener('input',e=>{st.pmax=num(e.target.value);page=1;apply();});
   $('sort').addEventListener('change',e=>{st.sort=e.target.value;apply();});
   $('per').addEventListener('change',e=>{st.per=+e.target.value;page=1;apply();});
-  for(const th of document.querySelectorAll('thead th')) th.addEventListener('click',()=>{const k=th.dataset.k;const [sk,sd]=st.sort.split(':');st.sort = k+':'+(sk===k&&sd==='1'?'-1':'1');$('sort').value=[...$('sort').options].some(o=>o.value===st.sort)?st.sort:'';apply();});
+  for(const th of document.querySelectorAll('thead th[data-k]')) th.addEventListener('click',()=>{const k=th.dataset.k;const [sk,sd]=st.sort.split(':');st.sort = k+':'+(sk===k&&sd==='1'?'-1':'1');$('sort').value=[...$('sort').options].some(o=>o.value===st.sort)?st.sort:'';apply();});
   $('reset').addEventListener('click',()=>{Object.assign(st,{q:'',cat:'',brand:'',cond:'',pmin:null,pmax:null,sort:''});$('q').value='';$('pmin').value='';$('pmax').value='';$('sort').value='';page=1;buildFilters();apply();});
 
   // ----- image zoom -----
